@@ -25,17 +25,17 @@ const Mercury = {
     rotationPeriod: 1407.6,
     distance: 57.9,
     orbitalPeriod: 88,
-    orbitalInclination: 7.0,
+    orbitalInclination: 3.4,
     obliquityToOrbit: 0.034
 
 }
 
 const Venus = {
     diameter: 90,
-    rotationPeriod: -5832.5,
+    rotationPeriod: -58.5,
     distance: 108.2,
     orbitalPeriod: 224.7,
-    orbitalInclination: 3.4,
+    orbitalInclination: 3.9,
     obliquityToOrbit: 177.4
 }
 
@@ -53,7 +53,7 @@ const Mars = {
     rotationPeriod: 24.6,
     distance: 190.9,
     orbitalPeriod: 687,
-    orbitalInclination: 1.9,
+    orbitalInclination: 0.09,
     obliquityToOrbit: 25.2
 }
 
@@ -62,7 +62,7 @@ const Jupiter = {
     rotationPeriod: 9.9,
     distance: 290.6,
     orbitalPeriod: 4331,
-    orbitalInclination: 1.3,
+    orbitalInclination: 6.1,
     obliquityToOrbit: 3.1
 }
 
