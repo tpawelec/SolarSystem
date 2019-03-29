@@ -1,15 +1,30 @@
-let sizeScale = 0;
-let velocityOrbitScale = 0;
-let velocityRotationScale = 0;
-var rotWorldMatrix;
+let loader = new THREE.TextureLoader();
+let scene = new THREE.Scene();
+let camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 3100 );
+let renderer = new THREE.WebGLRenderer( { antialias: true } );
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
 
+let PlanetAxis = new THREE.Vector3(0,1,0).normalize();
+let OrbitalAxis = new THREE.Vector3(0,1,0).normalize();
 
+loader.load('img/2k_stars_milky_way.jpg' , function(texture)
+            {
+             scene.background = texture;  
+            });
+
+camera.position.z = 500;
+camera.position.x = -1700;
+camera.position.y = 500;
+camera.lookAt(0,0,0);
+
+var axesHelper = new THREE.AxesHelper( 500 );
+scene.add( axesHelper );
 function scaleSize(size) {
     return (size / 2) * (window.innerHeight / window.innerWidth);
 }
 
 function scaleDistance(planet) {
-    //return Sun.diameterModel / 2 + planet.distance + planet.diameter / 2;
     return (SunSphere.position.x + Sun.diameterModel / 2 + planet.distance * 5) * (window.innerHeight/ window.innerWidth);
 }
 
@@ -21,136 +36,128 @@ function rotationSpeed(speed) {
     return Math.PI * (2 / speed);
 }
 
-function planetInclination(planet) {
-    return Math.tan(degToRad(planet.orbitalInclination)) * scaleDistance(planet);
-}
-
-var SunTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_sun.jpg')});
-var MercuryTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_mercury.jpg')});
-var VenusTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_venus_surface.jpg')});
-var EarthTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_earth_daymap.jpg')});
-var MarsTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_mars.jpg')});
-var JupiterTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_jupiter.jpg')});
-var SaturnTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_saturn.jpg')});
-var UranusTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_uranus.jpg')});
-var NeptuneTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_neptune.jpg')});
-
-
-let loader = new THREE.TextureLoader();
-var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 2000 );
-var renderer = new THREE.WebGLRenderer( { antialias: true } );
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
-
-var SunGeometry = new THREE.SphereGeometry(scaleSize(Sun.diameterModel),32,32);
-var SunMaterial = new THREE.MeshFaceMaterial(SunTexture)
-var SunSphere = new THREE.Mesh( SunGeometry, SunMaterial );
+/*
+SUN
+*/
+let SunTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_sun.jpg')});
+let SunGeometry = new THREE.SphereGeometry(scaleSize(Sun.diameterModel),32,32);
+let SunSphere = new THREE.Mesh( SunGeometry, SunTexture );
 SunSphere.position.set(0,0,0);
+scene.add( SunSphere );
 
-
-var PlanetAxis = new THREE.Vector3(0,1,0).normalize();
-var OrbitalAxis = new THREE.Vector3(0,1,0).normalize();
-
-var MercuryGeometry = new THREE.SphereGeometry(scaleSize(Mercury.diameter),32,32);
-var MercuryMaterial = new THREE.MeshFaceMaterial(MercuryTexture)
-var MercurySphere = new THREE.Mesh( MercuryGeometry, MercuryMaterial );
-var MercuryGroup = new THREE.Group();
+/*
+    MERCURY
+*/
+let MercuryTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_mercury.jpg')});
+let MercuryGeometry = new THREE.SphereGeometry(scaleSize(Mercury.diameter),32,32);
+let MercurySphere = new THREE.Mesh( MercuryGeometry, MercuryTexture );
+let MercuryGroup = new THREE.Group();
 MercuryGroup.add(MercurySphere);
 MercuryGroup.rotation.x = degToRad(Mercury.obliquityToOrbit);
 MercuryGroup.position.set(0,0,0);
 MercurySphere.position.set(scaleDistance(Mercury),0,0);
 MercurySphere.rotation.z = degToRad(Mercury.obliquityToOrbit);
+scene.add( MercuryGroup );
 
-var VenusGeometry = new THREE.SphereGeometry(scaleSize(Venus.diameter),32,32);
-var VenusMaterial = new THREE.MeshFaceMaterial(VenusTexture)
-var VenusSphere = new THREE.Mesh( VenusGeometry, VenusMaterial );
-var VenusGroup = new THREE.Group();
+/*
+    VENUS
+*/
+let VenusTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_venus_surface.jpg')});
+let VenusGeometry = new THREE.SphereGeometry(scaleSize(Venus.diameter),32,32);
+let VenusSphere = new THREE.Mesh( VenusGeometry, VenusTexture );
+let VenusGroup = new THREE.Group();
 VenusGroup.add(VenusSphere);
 VenusGroup.rotation.x = degToRad(Venus.orbitalInclination);
 VenusGroup.position.set(0,0,0);
 VenusSphere.position.set(scaleDistance(Venus),0,0);
 VenusSphere.rotation.z = degToRad(Venus.obliquityToOrbit);
+scene.add( VenusGroup );
 
-var EarthGeometry = new THREE.SphereGeometry(scaleSize(Earth.diameter),32,32);
-var EarthMaterial = new THREE.MeshFaceMaterial(EarthTexture)
-var EarthSphere = new THREE.Mesh( EarthGeometry, EarthMaterial );
-var EarthGroup = new THREE.Group();
+/*
+EARTH
+*/
+let EarthTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_earth_daymap.jpg')});
+let EarthGeometry = new THREE.SphereGeometry(scaleSize(Earth.diameter),32,32);
+let EarthSphere = new THREE.Mesh( EarthGeometry, EarthTexture );
+let EarthGroup = new THREE.Group();
 EarthGroup.add(EarthSphere);
 EarthGroup.rotation.x = degToRad(Earth.orbitalInclination);
 EarthGroup.position.set(0,0,0);
 EarthSphere.position.set(scaleDistance(Earth),0,0);
 EarthSphere.rotation.z = degToRad(Earth.obliquityToOrbit);
+scene.add( EarthGroup );
 
-var MarsGeometry = new THREE.SphereGeometry(scaleSize(Mars.diameter),32,32);
-var MarsMaterial = new THREE.MeshFaceMaterial(MarsTexture)
-var MarsSphere = new THREE.Mesh( MarsGeometry, MarsMaterial );
-var MarsGroup = new THREE.Group();
+/*
+    MARS
+*/
+let MarsTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_mars.jpg')});
+let MarsGeometry = new THREE.SphereGeometry(scaleSize(Mars.diameter),32,32);
+let MarsSphere = new THREE.Mesh( MarsGeometry, MarsTexture );
+let MarsGroup = new THREE.Group();
 MarsGroup.add(MarsSphere);
 MarsGroup.rotation.x = degToRad(Mars.orbitalInclination);
 MarsGroup.position.set(0,0,0);
 MarsSphere.position.set(scaleDistance(Mars),0,0);
 MarsSphere.rotation.z = degToRad(Mars.obliquityToOrbit);
+scene.add( MarsGroup );
 
-var JupiterGeometry = new THREE.SphereGeometry(scaleSize(Jupiter.diameter),32,32);
-var JupiterMaterial = new THREE.MeshFaceMaterial(JupiterTexture)
-var JupiterSphere = new THREE.Mesh( JupiterGeometry, JupiterMaterial );
-var JupiterGroup = new THREE.Group();
+/*
+JUPITER
+*/
+let JupiterTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_jupiter.jpg')});
+let JupiterGeometry = new THREE.SphereGeometry(scaleSize(Jupiter.diameter),32,32);
+let JupiterSphere = new THREE.Mesh( JupiterGeometry, JupiterTexture );
+let JupiterGroup = new THREE.Group();
 JupiterGroup.add(JupiterSphere);
 JupiterGroup.rotation.x = degToRad(Jupiter.orbitalInclination);
 JupiterGroup.position.set(0,0,0);
 JupiterSphere.position.set(scaleDistance(Jupiter),0,0);
 JupiterSphere.rotation.z = degToRad(Jupiter.obliquityToOrbit);
+scene.add( JupiterGroup );
 
-var SaturnGeometry = new THREE.SphereGeometry(scaleSize(Saturn.diameter),32,32);
-var SaturnMaterial = new THREE.MeshFaceMaterial(SaturnTexture)
-var SaturnSphere = new THREE.Mesh( SaturnGeometry, SaturnMaterial );
-var SaturnGroup = new THREE.Group();
+/*
+    SATURN
+*/
+let SaturnTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_saturn.jpg')});
+let SaturnGeometry = new THREE.SphereGeometry(scaleSize(Saturn.diameter),32,32);
+let SaturnSphere = new THREE.Mesh( SaturnGeometry, SaturnTexture );
+let SaturnGroup = new THREE.Group();
 SaturnGroup.add(SaturnSphere);
 SaturnGroup.rotation.x = degToRad(Saturn.orbitalInclination);
 SaturnGroup.position.set(0,0,0);
 SaturnSphere.position.set(scaleDistance(Saturn),0,0);
 SaturnSphere.rotation.z = degToRad(Saturn.obliquityToOrbit);
+scene.add( SaturnGroup );
 
-var UranusGeometry = new THREE.SphereGeometry(scaleSize(Uranus.diameter),32,32);
-var UranusMaterial = new THREE.MeshFaceMaterial(UranusTexture)
-var UranusSphere = new THREE.Mesh( UranusGeometry, UranusMaterial );
-var UranusGroup = new THREE.Group();
+/*
+URANUS
+*/
+let UranusTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_uranus.jpg')});
+let UranusGeometry = new THREE.SphereGeometry(scaleSize(Uranus.diameter),32,32);
+let UranusSphere = new THREE.Mesh( UranusGeometry, UranusTexture );
+let UranusGroup = new THREE.Group();
 UranusGroup.add(UranusSphere);
 UranusGroup.rotation.x = degToRad(Uranus.orbitalInclination);
 UranusGroup.position.set(0,0,0);
 UranusSphere.position.set(scaleDistance(Uranus),0,0);
 UranusSphere.rotation.z = degToRad(Uranus.obliquityToOrbit);
+scene.add( UranusGroup );
 
-var NeptuneGeometry = new THREE.SphereGeometry(scaleSize(Neptune.diameter),32,32);
-var NeptuneMaterial = new THREE.MeshFaceMaterial(NeptuneTexture)
-var NeptuneSphere = new THREE.Mesh( NeptuneGeometry, NeptuneMaterial );
-var NeptuneGroup = new THREE.Group();
+/*
+NEPTUNE
+*/
+let NeptuneTexture = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/2k_neptune.jpg')});
+let NeptuneGeometry = new THREE.SphereGeometry(scaleSize(Neptune.diameter),32,32);
+let NeptuneSphere = new THREE.Mesh( NeptuneGeometry, NeptuneTexture );
+let NeptuneGroup = new THREE.Group();
 NeptuneGroup.add(NeptuneSphere);
 NeptuneGroup.rotation.x = degToRad(Neptune.orbitalInclination);
 NeptuneGroup.position.set(0,0,0);
 NeptuneSphere.position.set(scaleDistance(Neptune),0,0);
 NeptuneSphere.rotation.z = degToRad(Neptune.obliquityToOrbit);
-
-/* loader.load('img/2k_stars_milky_way.jpg' , function(texture)
-            {
-             scene.background = texture;  
-            }); */
- scene.add( SunSphere );
-
-scene.add( MercuryGroup );
-scene.add( VenusGroup );
-scene.add(EarthGroup);
-scene.add( MarsGroup );
-scene.add( JupiterGroup );
-scene.add( SaturnGroup );
-scene.add( UranusGroup );
 scene.add( NeptuneGroup );
 
-camera.position.z = 500;
-camera.position.x = -1100;
-camera.position.y = 500;
-camera.lookAt(0,0,0);
+
 
 function animate() {
 	renderer.render( scene, camera );
