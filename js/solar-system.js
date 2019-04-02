@@ -17,7 +17,8 @@ Obliquity to Orbit (degrees) - The angle in degrees the axis of a planet (the im
 const Sun = {
     diameterReal: 928,
     diameterModel: 200,
-    distance: 0
+    distance: 0,
+    texture: '../img/sun.jpg'
 }
 
 const Mercury = {
@@ -26,8 +27,8 @@ const Mercury = {
     distance: 57.9,
     orbitalPeriod: 88,
     orbitalInclination: 3.4,
-    obliquityToOrbit: 0.034
-
+    obliquityToOrbit: 0.034,
+    texture: '../img/mercury.jpg'
 }
 
 const Venus = {
@@ -36,7 +37,8 @@ const Venus = {
     distance: 108.2,
     orbitalPeriod: 224.7,
     orbitalInclination: 3.9,
-    obliquityToOrbit: 177.4
+    obliquityToOrbit: 177.4,
+    texture: '../img/venus.jpg'
 }
 
 const Earth = {
@@ -45,7 +47,8 @@ const Earth = {
     distance: 149.6,
     orbitalPeriod: 365.2,
     orbitalInclination: 0,
-    obliquityToOrbit: 23.4
+    obliquityToOrbit: 23.4,
+    texture: '../img/earth.jpg'
 }
 
 const Mars = {
@@ -54,7 +57,8 @@ const Mars = {
     distance: 190.9,
     orbitalPeriod: 687,
     orbitalInclination: 0.09,
-    obliquityToOrbit: 25.2
+    obliquityToOrbit: 25.2,
+    texture: '../img/mars.jpg'
 }
 
 const Jupiter = {
@@ -63,7 +67,8 @@ const Jupiter = {
     distance: 290.6,
     orbitalPeriod: 4331,
     orbitalInclination: 6.1,
-    obliquityToOrbit: 3.1
+    obliquityToOrbit: 3.1,
+    texture: '../img/jupiter.jpg'
 }
 
 const Saturn = {
@@ -72,7 +77,8 @@ const Saturn = {
     distance: 350.5,
     orbitalPeriod: 10747,
     orbitalInclination: 2.5,
-    obliquityToOrbit: 26.7
+    obliquityToOrbit: 26.7,
+    texture: '../img/saturn.jpg'
 }
 
 const Uranus = {
@@ -81,7 +87,8 @@ const Uranus = {
     distance: 400.5,
     orbitalPeriod: 30589,
     orbitalInclination: 0.8,
-    obliquityToOrbit: 97.8
+    obliquityToOrbit: 97.8,
+    texture: '../img/uranus.jpg'
 }
 
 const Neptune = {
@@ -90,5 +97,6 @@ const Neptune = {
     distance: 440.1,
     orbitalPeriod: 59800,
     orbitalInclination: 1.8,
-    obliquityToOrbit: 28.3
+    obliquityToOrbit: 28.3,
+    texture: '../img/neptune.jpg'
 }
