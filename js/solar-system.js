@@ -18,7 +18,7 @@ const Sun = {
     diameterReal: 928,
     diameterModel: 200,
     distance: 0,
-    texture: '../img/sun.jpg'
+    texture: 'img/sun.jpg'
 }
 
 const Mercury = {
@@ -28,7 +28,7 @@ const Mercury = {
     orbitalPeriod: 88,
     orbitalInclination: 3.4,
     obliquityToOrbit: 0.034,
-    texture: '../img/mercury.jpg'
+    texture: 'img/mercury.jpg'
 }
 
 const Venus = {
@@ -38,7 +38,7 @@ const Venus = {
     orbitalPeriod: 224.7,
     orbitalInclination: 3.9,
     obliquityToOrbit: 177.4,
-    texture: '../img/venus.jpg'
+    texture: 'img/venus.jpg'
 }
 
 const Earth = {
@@ -48,7 +48,7 @@ const Earth = {
     orbitalPeriod: 365.2,
     orbitalInclination: 0,
     obliquityToOrbit: 23.4,
-    texture: '../img/earth.jpg'
+    texture: 'img/earth.jpg'
 }
 
 const Mars = {
@@ -58,7 +58,7 @@ const Mars = {
     orbitalPeriod: 687,
     orbitalInclination: 0.09,
     obliquityToOrbit: 25.2,
-    texture: '../img/mars.jpg'
+    texture: 'img/mars.jpg'
 }
 
 const Jupiter = {
@@ -68,7 +68,7 @@ const Jupiter = {
     orbitalPeriod: 4331,
     orbitalInclination: 6.1,
     obliquityToOrbit: 3.1,
-    texture: '../img/jupiter.jpg'
+    texture: 'img/jupiter.jpg'
 }
 
 const Saturn = {
@@ -78,7 +78,7 @@ const Saturn = {
     orbitalPeriod: 10747,
     orbitalInclination: 2.5,
     obliquityToOrbit: 26.7,
-    texture: '../img/saturn.jpg'
+    texture: 'img/saturn.jpg'
 }
 
 const Uranus = {
@@ -88,7 +88,7 @@ const Uranus = {
     orbitalPeriod: 30589,
     orbitalInclination: 0.8,
     obliquityToOrbit: 97.8,
-    texture: '../img/uranus.jpg'
+    texture: 'img/uranus.jpg'
 }
 
 const Neptune = {
@@ -98,5 +98,5 @@ const Neptune = {
     orbitalPeriod: 59800,
     orbitalInclination: 1.8,
     obliquityToOrbit: 28.3,
-    texture: '../img/neptune.jpg'
+    texture: 'img/neptune.jpg'
 }

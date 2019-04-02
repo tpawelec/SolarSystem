@@ -1,13 +1,34 @@
 let scaleSpeed = 1;
 
 let loader, scene, camera, renderer;
+let gui, cam, focusGui;
 let PlanetAxis, OrbitalAxis;
 
+let SunTexture, SunSphere, SunGeometry;
+let MercuryTexture, MercurySphere, MercuryGroup, MercuryGeometry;
+let VenusTexture, VenusSphere, VenusGroup, VenusGeometry;
+let EarthTexture, EarthSphere, EarthGroup, EarthGeometry;
+let MarsTexture, MarsSphere, MarsGroup, MarsGeometry;
+let JupiterTexture, JupiterSphere, JupiterGroup, JupiterGeometry;
+let SaturnTexture, SaturnSphere, SaturnGroup, SaturnGeometry;
+let NeptuneTexture, NeptuneSphere, NeptuneGroup, NeptuneGeometry;
+let UranusTexture, UranusSphere, UranusGroup, UranusGeometry;
+
+let options, focusOptions;
+
+let cameraPos, cameraLookAt;
+let asd;
 init();
 animate();
 
 function init() {
     
+    cameraPos = {
+        x: -1700,
+        y: 500,
+        z: 500
+    }
+    asd = "1";
     /*
         SCENE
     */
@@ -26,11 +47,51 @@ function init() {
                  scene.background = texture;  
                 });
     
-    camera.position.z = 500;
-    camera.position.x = -1700;
-    camera.position.y = 500;
+    camera.position.z = cameraPos.z;
+    camera.position.x = cameraPos.x;
+    camera.position.y = cameraPos.y;
     camera.lookAt(0,0,0);
     
+
+    window.addEventListener('resize', onWindowResize, false);
+
+    /*
+        OPTIONS        
+    */
+    options = {
+       camera: {
+           speed: 1
+        }
+    }
+
+    focusOptions = {
+        entireScene: true,
+        Mercury: false,
+        Venus: false,
+        Earth: false,
+        Mars: false,
+        Jupiter: false,
+        Saturn: false,
+        Neptune: false,
+        Uranus: false
+    }
+    gui = new dat.GUI();
+    cam = gui.addFolder('Camera');
+    cam.add(options.camera, 'speed', 1, 100).listen();
+    cam.open();
+    focusOpt = gui.addFolder('Focus');
+    focusOpt.add(focusOptions, 'entireScene').name('Entire Scene').listen().onChange(() => {setOptions('entireScene')});
+    focusOpt.add(focusOptions, 'Mercury').name('Mercury').listen().onChange(() => {setOptions('Mercury')});
+    focusOpt.add(focusOptions, 'Venus').name('Venus').listen().onChange(() => {setOptions('Venus')});
+    focusOpt.add(focusOptions, 'Earth').name('Earth').listen().onChange(() => {setOptions('Earth')});
+    focusOpt.add(focusOptions, 'Mars').name('Mars').listen().onChange(() => {setOptions('Mars')});
+    focusOpt.add(focusOptions, 'Jupiter').name('Jupiter').listen().onChange(() => {setOptions('Jupiter')});
+    focusOpt.add(focusOptions, 'Saturn').name('Saturn').listen().onChange(() => {setOptions('Saturn')});
+    focusOpt.add(focusOptions, 'Neptune').name('Neptune').listen().onChange(() => {setOptions('Neptune')});
+    focusOpt.add(focusOptions, 'Uranus').name('Uranus').listen().onChange(() => {setOptions('Uranus')});
+    focusOpt.open();
+    
+
     /*
         SUN
     */
@@ -38,6 +99,8 @@ function init() {
     SunGeometry = new THREE.SphereGeometry(scaleSize(Sun.diameterModel),32,32);
     SunSphere = new THREE.Mesh( SunGeometry, SunTexture );
     SunSphere.position.set(0,0,0);
+    scene.add( SunSphere );
+
     /*
         MERCURY
     */
@@ -149,7 +212,6 @@ function init() {
     NeptuneSphere.position.set(scaleDistance(Neptune),0,0);
     NeptuneSphere.rotation.z = degToRad(Neptune.obliquityToOrbit);
     scene.add( NeptuneGroup );
-    scene.add( SunSphere );
 }
     
 
@@ -157,7 +219,7 @@ function init() {
 
 
 function animate() {
-	renderer.render( scene, camera );
+    renderer.render( scene, camera );
     SunSphere.rotation.x += 0.01;
     SunSphere.rotation.y += 0.01;
     SunSphere.rotation.z += 0.01;
@@ -165,7 +227,7 @@ function animate() {
     VenusSphere.rotateOnAxis(PlanetAxis, -rotationSpeed(Venus.rotationPeriod));
     EarthSphere.rotateOnAxis(PlanetAxis, rotationSpeed(Earth.rotationPeriod));
     MarsSphere.rotateOnAxis(PlanetAxis, rotationSpeed(Mars.rotationPeriod));
-    JupiterSphere.rotateOnAxis(PlanetAxis, rotationSpeed(Jupiter.rotationPeriod));
+    //JupiterSphere.rotateOnAxis(PlanetAxis, rotationSpeed(Jupiter.rotationPeriod));
     SaturnSphere.rotateOnAxis(PlanetAxis, rotationSpeed(Saturn.rotationPeriod));
     UranusSphere.rotateOnAxis(PlanetAxis, rotationSpeed(Uranus.rotationPeriod));
     NeptuneSphere.rotateOnAxis(PlanetAxis, rotationSpeed(Neptune.rotationPeriod));
@@ -177,10 +239,55 @@ function animate() {
     SaturnGroup.rotateOnAxis(OrbitalAxis, orbitalSpeed(Saturn));
     UranusGroup.rotateOnAxis(OrbitalAxis, -orbitalSpeed(Uranus));
     NeptuneGroup.rotateOnAxis(OrbitalAxis, orbitalSpeed(Neptune));
+    
+    switch (true) {
+        case focusOptions.entireScene:
+            camera.lookAt(0,0,0);
+            break;
+            case focusOptions.Mercury:
+            camera.lookAt(MercurySphere.position);
+            break;
+            case focusOptions.Venus:
+            camera.lookAt(VenusSphere.position);
+            break;
+            case focusOptions.Earth:
+            camera.lookAt(EarthSphere.position);
+            break;
+        case focusOptions.Mars:
+        camera.lookAt(MarsSphere.position);
+            break;
+        case focusOptions.Jupiter:
+        camera.fov = 75;
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.near = 1;
+            camera.far = 300;
+            camera.position.x = JupiterSphere.position.x * Math.sin(JupiterGroup.rotation.x); 
+            camera.position.y = JupiterSphere.position.x * Math.sin(JupiterGroup.rotation.y); 
+            camera.position.z = JupiterSphere.position.x * Math.sin(JupiterGroup.rotation.z); 
+            camera.lookAt(JupiterSphere.position);
+            break;
+        case focusOptions.Saturn:
+        camera.lookAt(SaturnSphere.position);
+            break;
+        case focusOptions.Neptune:
+            camera.lookAt(NeptuneSphere.position);
+            break;
+            case focusOptions.Uranus:
+            camera.lookAt(UranusSphere.position);
+            break;
+            default:
+            break;
+    }
     requestAnimationFrame( animate );
 
 }
 
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.render(scene, camera);
+}
 
 function scaleSize(size) {
     return (size / 2) * (window.innerHeight / window.innerWidth);
@@ -195,9 +302,19 @@ function degToRad(deg) {
 }
 
 function rotationSpeed(speed) {
-    return scaleSpeed * (Math.PI * (2 / speed));
+    return options.camera.speed * (Math.PI * (2 / speed));
 }
 
 function orbitalSpeed(planet) {
-    return (rotationSpeed(planet.rotationPeriod) / (scaleSpeed * planet.orbitalPeriod));
+    return options.camera.speed * ((rotationSpeed(planet.rotationPeriod) / options.camera.speed) / planet.orbitalPeriod);
+}
+
+function setOptions(option) {
+    for(let opt in focusOptions) {
+        focusOptions[opt] = false;
+    }
+
+    focusOptions[option] = true;
+    
+    
 }
