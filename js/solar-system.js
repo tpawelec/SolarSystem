@@ -24,7 +24,7 @@ const Sun = {
 const Mercury = {
     diameter: 40,
     rotationPeriod: 1407.6,
-    rotationSpeedRad: 1.24e-6,
+    rotationSpeedRad: 1.24e-3,
     distance: 57.9,
     orbitalPeriod: 88,
     orbitalInclination: 3.4,
@@ -35,7 +35,7 @@ const Mercury = {
 const Venus = {
     diameter: 90,
     rotationPeriod: -58.5,
-    rotationSpeedRad: 2.99e-7,
+    rotationSpeedRad: 2.99e-4,
     distance: 108.2,
     orbitalPeriod: 224.7,
     orbitalInclination: 3.9,
@@ -46,7 +46,7 @@ const Venus = {
 const Earth = {
     diameter: 100,
     rotationPeriod: 23.9,
-    rotationSpeedRad: 7.29e-5,
+    rotationSpeedRad: 7.29e-3,
     distance: 149.6,
     orbitalPeriod: 365.2,
     orbitalInclination: 0,
@@ -57,7 +57,7 @@ const Earth = {
 const Mars = {
     diameter: 50,
     rotationPeriod: 24.6,
-    rotationSpeedRad: 7.09e-5,
+    rotationSpeedRad: 7.09e-2,
     distance: 190.9,
     orbitalPeriod: 687,
     orbitalInclination: 0.09,
@@ -68,7 +68,7 @@ const Mars = {
 const Jupiter = {
     diameter: 150,
     rotationPeriod: 9.9,
-    rotationSpeedRad: 1.77e-4,
+    rotationSpeedRad: 1.77e-2,
     distance: 290.6,
     orbitalPeriod: 4331,
     orbitalInclination: 6.1,
@@ -79,7 +79,7 @@ const Jupiter = {
 const Saturn = {
     diameter: 110,
     rotationPeriod: 10.7,
-    rotationSpeedRad: 1.64e-4,
+    rotationSpeedRad: 1.64e-2,
     distance: 350.5,
     orbitalPeriod: 10747,
     orbitalInclination: 2.5,
@@ -90,7 +90,7 @@ const Saturn = {
 const Uranus = {
     diameter: 100,
     rotationPeriod: -17.2,
-    rotationSpeedRad: -1.04e-4,
+    rotationSpeedRad: -1.04e-2,
     distance: 400.5,
     orbitalPeriod: 30589,
     orbitalInclination: 0.8,
@@ -101,7 +101,7 @@ const Uranus = {
 const Neptune = {
     diameter: 65,
     rotationPeriod: 16.1,
-    rotationSpeedRad: 1.08e-4,
+    rotationSpeedRad: 1.08e-2,
     distance: 440.1,
     orbitalPeriod: 59800,
     orbitalInclination: 1.8,
