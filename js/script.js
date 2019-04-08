@@ -1,23 +1,15 @@
-let scaleSpeed = 1;
-
 let loader, scene, camera, renderer;
 let gui, cam, focusGui;
 let PlanetAxis;
 
-let SunTexture, SunSphere, SunGeometry;
-let MercuryTexture, MercurySphere, MercuryGeometry;
-let VenusTexture, VenusSphere, VenusGeometry;
-let EarthTexture, EarthSphere, EarthGeometry;
-let MarsTexture, MarsSphere, MarsGeometry;
-let JupiterTexture, JupiterSphere, JupiterGeometry;
-let SaturnTexture, SaturnSphere, SaturnGeometry;
-let NeptuneTexture, NeptuneSphere, NeptuneGeometry;
-let UranusTexture, UranusSphere, UranusGeometry;
-let sunLight, aLight;
+let sunLight;
 let options, focusOptions;
 
-let cameraPos, cameraLookAt;
-let thetaMercury, thetaVenus, thetaEarth, thetaMars, thetaJupiter, thetaSaturn, thetaUranus, thetaNeptune;
+let textures = {};
+let geometries = {};
+let planetSpheres = {};
+let thetas = {};
+
 
 let controls;
 
@@ -29,16 +21,6 @@ init();
 animate();
 
 function init() {
-
-    thetaMercury = 0;
-    thetaVenus = 0;
-    thetaEarth = 0;
-    thetaMars = 0;
-    thetaJupiter = 0;
-    thetaSaturn = 0;
-    thetaUranus = 0;
-    thetaNeptune = 0;
-
     /*
         SCENE
     */
@@ -64,8 +46,12 @@ function init() {
 
     window.addEventListener('resize', onWindowResize, false);
 
+    camera.position.z = 500;
+    camera.position.x = -1700;
+    camera.position.y = 500;
+
     /*
-    OPTIONS        
+        DAT GUI      
     */
     options = {
         camera: {
@@ -119,10 +105,10 @@ function init() {
     });
     focusOpt.open();
 
-    camera.position.z = 500;
-    camera.position.x = -1700;
-    camera.position.y = 500;
-
+    
+    /*
+        ORBIT CONTROLS
+    */
     controls = new THREE.OrbitControls(camera, renderer.domElement);
 
     controls.enableDamping = true;
@@ -132,8 +118,9 @@ function init() {
     controls.autoRotateSpeed = 0.08;
     controls.enableKeys = false;
     controls.panSpeed = 0.05;
+    
     /*
-    SUN
+        SUN
     */
     SunTexture = new THREE.MeshBasicMaterial({
         map: new THREE.TextureLoader().load(Sun.texture)
@@ -144,7 +131,7 @@ function init() {
     scene.add(SunSphere);
 
     /*
-    LIGHT
+        LIGHT
     */
     sunLight = new THREE.PointLight(0xffffff, 2.5, 4000, 1);
     sunLight.castShadow = true;
@@ -153,103 +140,20 @@ function init() {
     sunLight.shadow.bias = 0.005;
     SunSphere.add(sunLight)
 
-
     /*
-        MERCURY
+        PLANETS
     */
-    MercuryTexture = new THREE.MeshLambertMaterial({
-        map: new THREE.TextureLoader().load(Mercury.texture)
-    });
-    MercuryGeometry = new THREE.SphereGeometry(scaleSize(Mercury.diameter), 32, 32);
-    MercurySphere = new THREE.Mesh(MercuryGeometry, MercuryTexture);
-    MercurySphere.position.set(scaleDistance(Mercury), planetInclination(Mercury), 0);
-    MercurySphere.rotation.z = degToRad(Mercury.obliquityToOrbit);
-    scene.add(MercurySphere);
-
-    /*
-        VENUS
-    */
-    VenusTexture = new THREE.MeshLambertMaterial({
-        map: new THREE.TextureLoader().load(Venus.texture)
-    });
-    VenusGeometry = new THREE.SphereGeometry(scaleSize(Venus.diameter), 32, 32);
-    VenusSphere = new THREE.Mesh(VenusGeometry, VenusTexture);
-    VenusSphere.position.set(scaleDistance(Venus), planetInclination(Venus), 0);
-    VenusSphere.rotation.z = degToRad(Venus.obliquityToOrbit);
-    scene.add(VenusSphere);
-
-    /*
-    EARTH
-    */
-    EarthTexture = new THREE.MeshLambertMaterial({
-        map: new THREE.TextureLoader().load(Earth.texture)
-    });
-    EarthGeometry = new THREE.SphereGeometry(scaleSize(Earth.diameter), 32, 32);
-    EarthSphere = new THREE.Mesh(EarthGeometry, EarthTexture);
-    EarthSphere.position.set(scaleDistance(Earth), planetInclination(Earth), 0);
-    EarthSphere.rotation.z = degToRad(Earth.obliquityToOrbit);
-    scene.add(EarthSphere);
-
-    /*
-        MARS
-    */
-    MarsTexture = new THREE.MeshLambertMaterial({
-        map: new THREE.TextureLoader().load(Mars.texture)
-    });
-    MarsGeometry = new THREE.SphereGeometry(scaleSize(Mars.diameter), 32, 32);
-    MarsSphere = new THREE.Mesh(MarsGeometry, MarsTexture);
-    MarsSphere.position.set(scaleDistance(Mars), planetInclination(Mars), 0);
-    MarsSphere.rotation.z = degToRad(Mars.obliquityToOrbit);
-    scene.add(MarsSphere);
-
-    /*
-    JUPITER
-    */
-    JupiterTexture = new THREE.MeshLambertMaterial({
-        map: new THREE.TextureLoader().load(Jupiter.texture)
-    });
-    JupiterGeometry = new THREE.SphereGeometry(scaleSize(Jupiter.diameter), 32, 32);
-    JupiterSphere = new THREE.Mesh(JupiterGeometry, JupiterTexture);
-    JupiterSphere.position.set(scaleDistance(Jupiter), planetInclination(Jupiter), 0);
-    JupiterSphere.rotation.z = degToRad(Jupiter.obliquityToOrbit);
-    scene.add(JupiterSphere);
-
-    /*
-        SATURN
-    */
-    SaturnTexture = new THREE.MeshLambertMaterial({
-        map: new THREE.TextureLoader().load(Saturn.texture)
-    });
-    SaturnGeometry = new THREE.SphereGeometry(scaleSize(Saturn.diameter), 32, 32);
-    SaturnSphere = new THREE.Mesh(SaturnGeometry, SaturnTexture);
-    SaturnSphere.position.set(scaleDistance(Saturn), planetInclination(Saturn), 0);
-    SaturnSphere.rotation.z = degToRad(Saturn.obliquityToOrbit);
-    scene.add(SaturnSphere);
-
-    /*
-    URANUS
-    */
-    UranusTexture = new THREE.MeshLambertMaterial({
-        map: new THREE.TextureLoader().load(Uranus.texture)
-    });
-    UranusGeometry = new THREE.SphereGeometry(scaleSize(Uranus.diameter), 32, 32);
-    UranusSphere = new THREE.Mesh(UranusGeometry, UranusTexture);
-    UranusSphere.position.set(scaleDistance(Uranus), planetInclination(Uranus), 0);
-    UranusSphere.rotation.z = degToRad(Uranus.obliquityToOrbit);
-    scene.add(UranusSphere);
-
-    /*
-    NEPTUNE
-    */
-    NeptuneTexture = new THREE.MeshLambertMaterial({
-        map: new THREE.TextureLoader().load(Neptune.texture)
-    });
-    NeptuneGeometry = new THREE.SphereGeometry(scaleSize(Neptune.diameter), 32, 32);
-    NeptuneSphere = new THREE.Mesh(NeptuneGeometry, NeptuneTexture);
-    NeptuneSphere.position.set(scaleDistance(Neptune), planetInclination(Neptune), 0);
-    NeptuneSphere.rotation.z = degToRad(Neptune.obliquityToOrbit);
-    scene.add(NeptuneSphere);
-
+    for(let planet in Planets) {
+        textures[planet] = new THREE.MeshLambertMaterial({
+            map: new THREE.TextureLoader().load(Planets[planet].texture)
+        });
+        geometries[planet] = new THREE.SphereGeometry(scaleSize(Planets[planet].diameter), 32, 32);
+        planetSpheres[planet] = new THREE.Mesh(geometries[planet], textures[planet]);
+        planetSpheres[planet].position.set(scaleDistance(Planets[planet]), planetInclination(Planets[planet]), 0);
+        planetSpheres[planet].rotation.z = degToRad(Planets[planet].obliquityToOrbit);
+        thetas[planet] = 0;
+        scene.add(planetSpheres[planet]);
+    }
     currentObj = SunSphere;
 }
 
@@ -264,101 +168,21 @@ function animate() {
     SunSphere.rotation.x += 0.01;
     SunSphere.rotation.y += 0.01;
     SunSphere.rotation.z += 0.01;
-    MercurySphere.rotateOnAxis(PlanetAxis, rotationSpeed(Mercury.rotationSpeedRad));
-    VenusSphere.rotateOnAxis(PlanetAxis, -rotationSpeed(Venus.rotationSpeedRad));
-    EarthSphere.rotateOnAxis(PlanetAxis, rotationSpeed(Earth.rotationSpeedRad));
-    MarsSphere.rotateOnAxis(PlanetAxis, rotationSpeed(Mars.rotationSpeedRad));
-    JupiterSphere.rotateOnAxis(PlanetAxis, rotationSpeed(Jupiter.rotationSpeedRad));
-    SaturnSphere.rotateOnAxis(PlanetAxis, rotationSpeed(Saturn.rotationSpeedRad));
-    UranusSphere.rotateOnAxis(PlanetAxis, rotationSpeed(Uranus.rotationSpeedRad));
-    NeptuneSphere.rotateOnAxis(PlanetAxis, rotationSpeed(Neptune.rotationSpeedRad));
+    for(let planet in Planets) {
+        thetas[planet] += calculateTheta(Planets[planet]);
+        
+        planetSpheres[planet].rotateOnAxis(PlanetAxis, rotationSpeed(Planets[planet].rotationSpeedRad));
+        planetSpheres[planet].position.x = scaleDistance(Planets[planet]) * Math.cos(thetas[planet]);
+        planetSpheres[planet].position.z = scaleDistance(Planets[planet]) * Math.sin(thetas[planet]);
+        planetSpheres[planet].position.y = planetInclination(Planets[planet]) * Math.cos(thetas[planet]);
 
-    thetaVenus += calculateTheta(Venus);
-    thetaMercury += calculateTheta(Mercury);
-    thetaEarth += calculateTheta(Earth);
-    thetaMars += calculateTheta(Mars);
-    thetaJupiter += calculateTheta(Jupiter);
-    thetaSaturn += calculateTheta(Saturn);
-    thetaUranus += calculateTheta(Uranus);
-    thetaNeptune += calculateTheta(Neptune);
-
-    MercurySphere.position.x = scaleDistance(Mercury) * Math.cos(thetaMercury);
-    MercurySphere.position.z = scaleDistance(Mercury) * Math.sin(thetaMercury);
-    MercurySphere.position.y = planetInclination(Mercury) * Math.cos(thetaMercury);
-
-    VenusSphere.position.x = scaleDistance(Venus) * Math.cos(thetaVenus);
-    VenusSphere.position.z = scaleDistance(Venus) * Math.sin(thetaVenus);
-    VenusSphere.position.y = planetInclination(Venus) * Math.cos(thetaVenus);
-
-    EarthSphere.position.x = scaleDistance(Earth) * Math.cos(thetaEarth);
-    EarthSphere.position.z = scaleDistance(Earth) * Math.sin(thetaEarth);
-    EarthSphere.position.y = planetInclination(Earth) * Math.cos(thetaEarth);
-
-    MarsSphere.position.x = scaleDistance(Mars) * Math.cos(thetaMars);
-    MarsSphere.position.z = scaleDistance(Mars) * Math.sin(thetaMars);
-    MarsSphere.position.y = planetInclination(Mars) * Math.cos(thetaMars);
-
-    JupiterSphere.position.x = scaleDistance(Jupiter) * Math.cos(thetaJupiter);
-    JupiterSphere.position.z = scaleDistance(Jupiter) * Math.sin(thetaJupiter);
-    JupiterSphere.position.y = planetInclination(Jupiter) * Math.cos(thetaJupiter);
-
-    SaturnSphere.position.x = scaleDistance(Saturn) * Math.cos(thetaSaturn);
-    SaturnSphere.position.z = scaleDistance(Saturn) * Math.sin(thetaSaturn);
-    SaturnSphere.position.y = planetInclination(Saturn) * Math.cos(thetaSaturn);
-
-    UranusSphere.position.x = scaleDistance(Uranus) * Math.cos(thetaUranus);
-    UranusSphere.position.z = scaleDistance(Uranus) * Math.sin(thetaUranus);
-    UranusSphere.position.y = planetInclination(Uranus) * Math.cos(thetaUranus);
-
-    NeptuneSphere.position.x = scaleDistance(Neptune) * Math.cos(thetaNeptune);
-    NeptuneSphere.position.z = scaleDistance(Neptune) * Math.sin(thetaNeptune);
-    NeptuneSphere.position.y = planetInclination(Neptune) * Math.cos(thetaNeptune);
-
-    switch (true) {
-        case focusOptions.entireScene:
-            camera.far = 3100;
-            currentObj = SunSphere;
-            break;
-        case focusOptions.Mercury:
-            camera.far = 300;
-            currentObj = MercurySphere;
-            break;
-        case focusOptions.Venus:
-            camera.far = 300;
-            currentObj = VenusSphere;
-            break;
-        case focusOptions.Earth:
-            camera.far = 300;
-            currentObj = EarthSphere;
-            break;
-        case focusOptions.Mars:
-            camera.far = 300;
-            currentObj = MarsSphere;
-            break;
-        case focusOptions.Jupiter:
-            camera.far = 300;
-            currentObj = JupiterSphere
-            break;
-        case focusOptions.Saturn:
-            camera.far = 300;
-            currentObj = SaturnSphere;
-            break;
-        case focusOptions.Neptune:
-            camera.far = 300;
-            currentObj = NeptuneSphere;
-            break;
-        case focusOptions.Uranus:
-            camera.far = 300;
-            currentObj = UranusSphere;
-            break;
-        default:
-            break;
     }
 
-    if (focusOptions.entireScene == true) {
-        camOffset = 1700;
-    } else {
-        camOffset = 200;
+
+    if (!(focusOptions.entireScene)) {
+        direction.subVectors( camera.position, controls.target );
+		direction.normalize().multiplyScalar( camOffset );
+		camera.position.copy( direction.add( controls.target ) );
     }
     renderer.render(scene, camera);
 }
@@ -392,7 +216,19 @@ function setOptions(option) {
     }
 
     focusOptions[option] = true;
-    console.table(focusOptions);
+
+    if(option == 'entireScene') {
+        camOffset = 1700;
+        currentObj = SunSphere;
+        camera.far = 3100
+        direction.subVectors( camera.position, controls.target );
+		direction.normalize().multiplyScalar( camOffset );
+		camera.position.copy( direction.add( controls.target ) )
+    } else {
+        camOffset = 200;
+        currentObj = planetSpheres[option];
+        camera.far = 300;
+    }
 }
 
 function calculateTheta(planet) {

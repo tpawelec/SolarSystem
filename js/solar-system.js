@@ -13,15 +13,15 @@ Orbital Inclination (degrees) - The angle in degrees at which a planets orbit ar
 Obliquity to Orbit (degrees) - The angle in degrees the axis of a planet (the imaginary line running through the center of the planet from the north to south poles) 
                                is tilted relative to a line perpendicular to the planet's orbit around the Sun, north pole defined by right hand rule.
 */
-
 const Sun = {
     diameterReal: 928,
     diameterModel: 200,
     distance: 0,
     texture: 'img/sun.jpg'
 }
+const Planets = {
 
-const Mercury = {
+Mercury : {
     diameter: 40,
     rotationPeriod: 1407.6,
     rotationSpeedRad: 1.24e-3,
@@ -30,9 +30,9 @@ const Mercury = {
     orbitalInclination: 3.4,
     obliquityToOrbit: 0.034,
     texture: 'img/mercury.jpg'
-}
+},
 
-const Venus = {
+Venus : {
     diameter: 90,
     rotationPeriod: -58.5,
     rotationSpeedRad: 2.99e-4,
@@ -41,9 +41,9 @@ const Venus = {
     orbitalInclination: 3.9,
     obliquityToOrbit: 177.4,
     texture: 'img/venus.jpg'
-}
+},
 
-const Earth = {
+Earth : {
     diameter: 100,
     rotationPeriod: 23.9,
     rotationSpeedRad: 7.29e-3,
@@ -52,9 +52,9 @@ const Earth = {
     orbitalInclination: 0,
     obliquityToOrbit: 23.4,
     texture: 'img/earth.jpg'
-}
+},
 
-const Mars = {
+Mars : {
     diameter: 50,
     rotationPeriod: 24.6,
     rotationSpeedRad: 7.09e-2,
@@ -63,9 +63,9 @@ const Mars = {
     orbitalInclination: 0.09,
     obliquityToOrbit: 25.2,
     texture: 'img/mars.jpg'
-}
+},
 
-const Jupiter = {
+Jupiter : {
     diameter: 150,
     rotationPeriod: 9.9,
     rotationSpeedRad: 1.77e-2,
@@ -74,9 +74,9 @@ const Jupiter = {
     orbitalInclination: 6.1,
     obliquityToOrbit: 3.1,
     texture: 'img/jupiter.jpg'
-}
+},
 
-const Saturn = {
+Saturn : {
     diameter: 110,
     rotationPeriod: 10.7,
     rotationSpeedRad: 1.64e-2,
@@ -85,9 +85,9 @@ const Saturn = {
     orbitalInclination: 2.5,
     obliquityToOrbit: 26.7,
     texture: 'img/saturn.jpg'
-}
+},
 
-const Uranus = {
+Uranus : {
     diameter: 100,
     rotationPeriod: -17.2,
     rotationSpeedRad: -1.04e-2,
@@ -96,9 +96,9 @@ const Uranus = {
     orbitalInclination: 0.8,
     obliquityToOrbit: 97.8,
     texture: 'img/uranus.jpg'
-}
+},
 
-const Neptune = {
+Neptune : {
     diameter: 65,
     rotationPeriod: 16.1,
     rotationSpeedRad: 1.08e-2,
@@ -107,4 +107,5 @@ const Neptune = {
     orbitalInclination: 1.8,
     obliquityToOrbit: 28.3,
     texture: 'img/neptune.jpg'
+}
 }
