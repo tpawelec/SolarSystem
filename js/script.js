@@ -133,11 +133,7 @@ function init() {
     /*
         LIGHT
     */
-    sunLight = new THREE.PointLight(0xffffff, 2.5, 4000, 1);
-    sunLight.castShadow = true;
-    sunLight.shadow.camera.near = 1;
-    sunLight.shadow.camera.far = 6000;
-    sunLight.shadow.bias = 0.005;
+    sunLight = new THREE.PointLight(0xffffff, 2.5, 3000, 1);
     SunSphere.add(sunLight)
 
     /*
@@ -147,10 +143,13 @@ function init() {
         textures[planet] = new THREE.MeshLambertMaterial({
             map: new THREE.TextureLoader().load(Planets[planet].texture)
         });
+        textures[planet].flipY = false;
         geometries[planet] = new THREE.SphereGeometry(scaleSize(Planets[planet].diameter), 32, 32);
         planetSpheres[planet] = new THREE.Mesh(geometries[planet], textures[planet]);
         planetSpheres[planet].position.set(scaleDistance(Planets[planet]), planetInclination(Planets[planet]), 0);
         planetSpheres[planet].rotation.z = degToRad(Planets[planet].obliquityToOrbit);
+        planetSpheres[planet].castShadow = true;
+        planetSpheres[planet].receiveShadow = true;
         thetas[planet] = 0;
         scene.add(planetSpheres[planet]);
     }
