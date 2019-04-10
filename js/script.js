@@ -12,9 +12,10 @@ let thetas = {};
 
 
 let controls;
+let currentFocus;
 
 const direction = new THREE.Vector3();
-let camOffset = 1700;
+let camOffset = 2700;
 
 let currentObj;
 init();
@@ -105,7 +106,7 @@ function init() {
     });
     focusOpt.open();
 
-    
+    console.table(focusOptions)
     /*
         ORBIT CONTROLS
     */
@@ -117,7 +118,14 @@ function init() {
     controls.autoRotate = false;
     controls.autoRotateSpeed = 0.08;
     controls.enableKeys = false;
-    controls.panSpeed = 0.05;
+    controls.panSpeed = 0.5;
+    controls.minDistance = 200;
+
+    controls.mouseButtons = {
+        LEFT: THREE.MOUSE.LEFT,
+        MIDDLE: THREE.MOUSE.MIDDLE,
+        RIGHT: THREE.MOUSE.RIGHT
+    }
     
     /*
         SUN
@@ -148,22 +156,16 @@ function init() {
         planetSpheres[planet] = new THREE.Mesh(geometries[planet], textures[planet]);
         planetSpheres[planet].position.set(scaleDistance(Planets[planet]), planetInclination(Planets[planet]), 0);
         planetSpheres[planet].rotation.z = degToRad(Planets[planet].obliquityToOrbit);
-        planetSpheres[planet].castShadow = true;
-        planetSpheres[planet].receiveShadow = true;
         thetas[planet] = 0;
         scene.add(planetSpheres[planet]);
     }
     currentObj = SunSphere;
 }
 
-
 function animate() {
 
 
     requestAnimationFrame(animate);
-    currentObj.getWorldPosition(controls.target);
-    controls.update();
-
     SunSphere.rotation.x += 0.01;
     SunSphere.rotation.y += 0.01;
     SunSphere.rotation.z += 0.01;
@@ -174,15 +176,19 @@ function animate() {
         planetSpheres[planet].position.x = scaleDistance(Planets[planet]) * Math.cos(thetas[planet]);
         planetSpheres[planet].position.z = scaleDistance(Planets[planet]) * Math.sin(thetas[planet]);
         planetSpheres[planet].position.y = planetInclination(Planets[planet]) * Math.cos(thetas[planet]);
-
+        
     }
-
-
+    
+    
     if (!(focusOptions.entireScene)) {
+        currentObj.getWorldPosition(controls.target);
         direction.subVectors( camera.position, controls.target );
-		direction.normalize().multiplyScalar( camOffset );
-		camera.position.copy( direction.add( controls.target ) );
+        direction.normalize().multiplyScalar( camOffset );
+        camera.position.copy( direction.add( controls.target ) );
     }
+    
+    
+    controls.update();
     renderer.render(scene, camera);
 }
 
@@ -210,24 +216,38 @@ function rotationSpeed(speed) {
 }
 
 function setOptions(option) {
+    
+    if(option == currentFocus && option != 'entireScene') {
+
+        option = 'entireScene';
+    }
+    
     for (let opt in focusOptions) {
         focusOptions[opt] = false;
     }
 
     focusOptions[option] = true;
+        
 
     if(option == 'entireScene') {
         camOffset = 1700;
         currentObj = SunSphere;
         camera.far = 3100
-        direction.subVectors( camera.position, controls.target );
-		direction.normalize().multiplyScalar( camOffset );
-		camera.position.copy( direction.add( controls.target ) )
+        currentObj.getWorldPosition(controls.target);
+        camera.position.x = -1700;
+        controls.enablePan = true;
     } else {
         camOffset = 200;
         currentObj = planetSpheres[option];
         camera.far = 300;
+        controls.enablePan = false;
+         
     }
+
+        controls.update();
+
+        currentFocus = option;
+
 }
 
 function calculateTheta(planet) {
