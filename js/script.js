@@ -1,3 +1,7 @@
+/*
+    Override RingGeometry Constructor from R67
+*/
+
 THREE.RingGeometry = function ( innerRadius, outerRadius, thetaSegments, phiSegments, thetaStart, thetaLength ) {
 
 	THREE.Geometry.call( this );
@@ -69,6 +73,11 @@ THREE.RingGeometry = function ( innerRadius, outerRadius, thetaSegments, phiSegm
 
 THREE.RingGeometry.prototype = Object.create( THREE.Geometry.prototype );
 
+/*
+    End of override
+*/
+
+
 let loader, scene, camera, renderer;
 let gui, cam, focusGui;
 let PlanetAxis;
@@ -76,11 +85,10 @@ let PlanetAxis;
 let sunLight;
 let options, focusOptions;
 
-let textures = {};
-let geometries = {};
+let SunSphere, SunGlow;
 let planetSpheres = {};
 let thetas = {};
-let SaturnRingsGeom, SaturnRings, RingsMaterial;
+let SaturnRings, UranusRings;
 
 
 let controls;
@@ -170,11 +178,11 @@ function init() {
     focusOpt.add(focusOptions, 'Saturn').name('Saturn').listen().onChange(() => {
         setOptions('Saturn')
     });
-    focusOpt.add(focusOptions, 'Neptune').name('Neptune').listen().onChange(() => {
-        setOptions('Neptune')
-    });
     focusOpt.add(focusOptions, 'Uranus').name('Uranus').listen().onChange(() => {
         setOptions('Uranus')
+    });
+    focusOpt.add(focusOptions, 'Neptune').name('Neptune').listen().onChange(() => {
+        setOptions('Neptune')
     });
     focusOpt.open();
 
@@ -201,13 +209,29 @@ function init() {
     /*
         SUN
     */
-    SunTexture = new THREE.MeshBasicMaterial({
-        map: new THREE.TextureLoader().load(Sun.texture)
-    });
-    SunGeometry = new THREE.SphereGeometry(scaleSize(Sun.diameterModel), 32, 32);
-    SunSphere = new THREE.Mesh(SunGeometry, SunTexture);
+    
+    SunSphere = new THREE.Mesh(
+        new THREE.SphereGeometry(scaleSize(Sun.diameterModel), 32, 32), 
+        new THREE.MeshBasicMaterial({
+            map: new THREE.TextureLoader().load(Sun.texture)
+        }));
     SunSphere.position.set(0, 0, 0);
     scene.add(SunSphere);
+
+    // SUPER SIMPLE GLOW EFFECT
+    // use sprite because it appears the same from all angles
+    // FROM: http://stemkoski.github.io/Three.js/Simple-Glow.html
+
+    SunGlow = new THREE.Sprite(
+        new THREE.SpriteMaterial( 
+            { 
+                map: new THREE.ImageUtils.loadTexture( 'img/glow.png' ), 
+                useScreenCoordinates: false,
+                color: 0xF1DAA4, transparent: true, blending: THREE.AdditiveBlending
+            })
+        );
+        SunGlow.scale.set(150, 150, 1.0);
+        SunSphere.add(SunGlow); // this centers the glow at the mesh
 
     /*
         LIGHT
@@ -219,26 +243,50 @@ function init() {
         PLANETS
     */
     for(let planet in Planets) {
-        textures[planet] = new THREE.MeshLambertMaterial({
-            map: new THREE.TextureLoader().load(Planets[planet].texture)
-        });
-        textures[planet].flipY = false;
-        geometries[planet] = new THREE.SphereGeometry(scaleSize(Planets[planet].diameter), 32, 32);
-        planetSpheres[planet] = new THREE.Mesh(geometries[planet], textures[planet]);
+        
+        planetSpheres[planet] = new THREE.Mesh(
+            new THREE.SphereGeometry(scaleSize(Planets[planet].diameter), 32, 32), 
+            new THREE.MeshLambertMaterial({
+                map: new THREE.TextureLoader().load(Planets[planet].texture),
+                flipY: false
+            })
+            );
         planetSpheres[planet].position.set(scaleDistance(Planets[planet]), planetInclination(Planets[planet]), 0);
         planetSpheres[planet].rotation.z = degToRad(Planets[planet].obliquityToOrbit);
         thetas[planet] = 0;
         scene.add(planetSpheres[planet]);
     }
 
-    SaturnRingsGeom = new THREE.RingGeometry(scaleSize(Planets.Saturn.diameter) + 5, scaleSize(Planets.Saturn.diameter) + 35, 62, 62);
-    RingsMaterial = new THREE.MeshPhongMaterial( { map: new THREE.TextureLoader().load('img/saturnring.jpg'), side: THREE.DoubleSide } );
     
-    SaturnRings = new THREE.Mesh(SaturnRingsGeom, RingsMaterial);
+    SaturnRings = new THREE.Mesh(
+        new THREE.RingGeometry(scaleSize(Planets.Saturn.diameter) + 5, scaleSize(Planets.Saturn.diameter) + 35, 62, 62), 
+        new THREE.MeshLambertMaterial( { 
+            map: new THREE.TextureLoader().load('img/saturnRingsColor.jpg'), 
+            alphaMap: new THREE.TextureLoader().load('img/saturnRingsAlpha.png'), 
+            transparent: true, 
+            side: THREE.DoubleSide, 
+            alphaTest: 0.5 
+        } ));
     SaturnRings.position.set(0,0,0);
     SaturnRings.rotation.z = degToRad(Planets.Saturn.obliquityToOrbit);
     SaturnRings.rotation.x = Math.PI / 2;
     planetSpheres.Saturn.add(SaturnRings);
+
+    UranusRings = new THREE.Mesh(
+        new THREE.RingGeometry(scaleSize(Planets.Uranus.diameter) + 5, scaleSize(Planets.Uranus.diameter) + 35, 62, 62), 
+        new THREE.MeshLambertMaterial( { 
+            map: new THREE.TextureLoader().load('img/uranusRingsColor.jpg'), 
+            alphaMap: new THREE.TextureLoader().load('img/uranusRingsAlpha.png'), 
+            transparent: true, 
+            side: THREE.DoubleSide, 
+            alphaTest: 0.5 
+        } ));
+    UranusRings.position.set(0,0,0);
+    UranusRings.rotation.z = degToRad(Planets.Uranus.obliquityToOrbit);
+    UranusRings.rotation.x = Math.PI / 2;
+    planetSpheres.Uranus.add(UranusRings);
+
+
     currentObj = SunSphere;
 }
 
